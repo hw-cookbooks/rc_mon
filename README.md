@@ -59,10 +59,14 @@ $ watch -n 0.5 'ps -AH ux | grep memory_consumer | grep -v grep'
 
 RcMon uses two tools under the hood. Runit is used to keep the process running
 and cgroups are used to keep system resources under control. The `rc_mon_service`
-definition is simple creating a new cgroup grouping, putting all processes with
+definition is simply creating a new cgroup grouping, putting all processes with
 the defined owner under that group, and creating a runit service for it. It's
-simply a shortcut for something that can be accomplished directly in a recipe
+just a shortcut for something that can be accomplished directly in a recipe
 covering only memory restriction and cpu shares.
+
+Note the `owner` attribute is extremely important. All processes run by the provided
+owner will be moved under the created cgroup, so in general you'll want an
+explicitly defined user for the process.
 
 ## Using a different init
 
@@ -77,6 +81,11 @@ rc_mon_service 'memory_consumer' do
   no_runit true
 end
 ```
+
+and if you want to prevent runit from even being loaded/installed, set
+the attribute:
+
+* node[:rc_mon][:include_runit] = false
 
 ## Infos
 * Repository: https://github.com/hw-cookbooks/rc_mon
