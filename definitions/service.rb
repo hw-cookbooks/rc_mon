@@ -30,10 +30,13 @@ define :rc_mon_service, :memory_limit => '100M', :swap_limit => nil, :cpu_shares
   end
 
   unless(params[:no_runit])
-    prms = params.dup
+    runit_attrs = Hash[*(params.map do |key, value|
+      unless(%w(name memory_limit swap_limit cpu_shares no_runit).include?(key.to_s))
+        [key, value]
+      end).flatten.compact
+    ]
     runit_service params[:name] do
-      prms.each do |k,v|
-        next if k.to_sym == :name
+      runit_attrs.each do |k,v|
         self.send(k, v)
       end
     end
