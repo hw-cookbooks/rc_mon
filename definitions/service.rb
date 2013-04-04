@@ -30,10 +30,14 @@ define :rc_mon_service, :memory_limit => nil, :swap_limit => nil, :cpu_shares =>
   end
 
   unless(params[:no_runit])
-    runit_attrs = Hash[*(params.map do |key, value|
-      unless(%w(name memory_limit swap_limit cpu_shares no_runit).include?(key.to_s))
-        [key, value]
-      end).flatten.compact
+    runit_attrs = Hash[*
+      (
+        params.map do |key, value|
+          unless(%w(name memory_limit swap_limit cpu_shares no_runit).include?(key.to_s))
+            [key, value]
+          end
+        end.flatten.compact
+      )
     ]
     runit_service params[:name] do
       runit_attrs.each do |k,v|
