@@ -1,5 +1,5 @@
 
-define :rc_mon_service, :memory_limit => '100M', :swap_limit => nil, :cpu_shares => nil, :no_runit => false do
+define :rc_mon_service, :memory_limit => nil, :swap_limit => nil, :cpu_shares => nil, :no_runit => false do
   if(params[:owner] == 'root' || params[:owner].to_s.empty?)
     raise 'RCMon will not monitor processes owned by the root user!' unless params[:force_insanity]
   end
