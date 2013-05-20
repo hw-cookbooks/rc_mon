@@ -1,1 +1,1 @@
-default[:rc_mon][:include_runit] = true
+default[:rc_mon] = {}
