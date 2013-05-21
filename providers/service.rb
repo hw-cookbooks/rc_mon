@@ -2,7 +2,7 @@ def load_current_resource
   new_resource.group_name new_resource.name unless new_resource.group_name
 end
 
-Chef::Resource::RcMon::RUNIT_ACTIONS.each do |action_name|
+RUNIT_ACTIONS = Chef::Resource::RunitService.new('rc_mon').instance_variable_get(:@allowed_actions).each do |action_name|
   action action_name.to_sym do
     controls = configure_cgroups
     runit_resource = build_runit_resource
@@ -12,10 +12,13 @@ end
 
 def add_up_helper(controls)
   runit_resource = build_runit_resource
-  directory ::File.join(runit_resource.sv_dir, 'control') do
+  control_dir = ::File.join(runit_resource.sv_dir, runit_resource.service_name, 'control')
+  
+  directory control_dir do
     recursive true
   end
-  template ::File.join(runit_resource.sv_dir, 'control', 'u') do
+  
+  template ::File.join(control_dir, 'u') do
     source 'runit_control_up.erb'
     cookbook 'rc_mon'
     mode 0755
@@ -29,9 +32,11 @@ end
 
 def build_runit_resource
   unless(@runit_resource)
-    @runit_resource = Chef::Resource::Runit.new(new_resource.name, new_resource.run_context)
-    new_resource.runit_attributes.each do |k,v|
-      @runit_resource.send(k, v)
+    @runit_resource = Chef::Resource::RunitService.new(new_resource.name, new_resource.run_context)
+    if(new_resource.runit_attributes)
+      new_resource.runit_attributes.each do |k,v|
+        @runit_resource.send(k, v)
+      end
     end
     @runit_resource.action new_resource.action
     @runit_resource.subscribes(:restart,
