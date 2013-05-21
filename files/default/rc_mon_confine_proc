@@ -8,7 +8,7 @@ PID_FILE="${DIR}/../supervise/pid"
 PID=''
 
 until [ -e $PID_FILE -a "${PID}" != "" ]; do
-  sleep 0.5
+  sleep 0.2
   if [ -e $PID_FILE ]; then
     PID=`cat $PID_FILE | sed -r -e 's/\s//g'`
   fi
