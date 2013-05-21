@@ -2,7 +2,7 @@
 
 DIR=$( cd "$( dirname "$0" )" && pwd )
 GROUP="<%= @group %>"
-CONTROLS="<%= @controls %>"
+CONTROLS="<%= @controls.join(',') %>"
 
 /usr/local/bin/rc_mon_confine_proc $DIR $GROUP $CONTROLS &
 
