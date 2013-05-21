@@ -6,14 +6,13 @@ and best of all lightweight.
 
 ## Overview
 
-The RcMon cookbook provides a definition to configure process monitoring. A
-simple definition would look something like:
+The RcMon cookbook provides a simple LWRP to configure process monitoring. A
+simple resource would look something like:
 
 ```ruby
 rc_mon_service 'memory_consumer' do
   memory_limit '200M'
-  owner 'mem_tester'
-  group 'mem_tester'
+  cookbook 'my_cookbook'
 end
 ```
 
@@ -52,40 +51,22 @@ Now you can watch the process consume memory on the node, and once it has reache
 the 200M threshold be killed and auto restarted. 
 
 ```bash
-$ watch -n 0.5 'ps -AH ux | grep memory_consumer | grep -v grep'
+$ watch -n 0.5 'ps -AH ux | grep [m]emory_consumer'
 ```
 
 ## Under the hood
 
 RcMon uses two tools under the hood. Runit is used to keep the process running
 and cgroups are used to keep system resources under control. The `rc_mon_service`
-definition is simply creating a new cgroup grouping, putting all processes with
-the defined owner under that group, and creating a runit service for it. It's
-just a shortcut for something that can be accomplished directly in a recipe
-covering only memory restriction and cpu shares.
+LWRP is simply creating a new control grouping, using runit to start the process
+(and keep it running), and a helper to properly move new processes into the
+appropriate grouping. It's really just a shortcut for something that can be accomplished 
+directly in a recipe covering only memory restriction and cpu shares.
 
-Note the `owner` attribute is extremely important. All processes run by the provided
-owner will be moved under the created cgroup, so in general you'll want an
-explicitly defined user for the process.
+## Important changes
 
-## Using a different init
-
-If you're using a different init, like upstart, and don't need/want runit to keep
-the process alive, just use the `no_runit` argument:
-
-```ruby
-rc_mon_service 'memory_consumer' do
-  memory_limit '200M'
-  owner 'mem_tester'
-  group 'mem_tester'
-  no_runit true
-end
-```
-
-and if you want to prevent runit from even being loaded/installed, set
-the attribute:
-
-* node[:rc_mon][:include_runit] = false
+* cgroup restrictions are no longer UID based
+* Runit is no longer optional
 
 ## Infos
 * Repository: https://github.com/hw-cookbooks/rc_mon
