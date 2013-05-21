@@ -63,6 +63,15 @@ LWRP is simply creating a new control grouping, using runit to start the process
 appropriate grouping. It's really just a shortcut for something that can be accomplished 
 directly in a recipe covering only memory restriction and cpu shares.
 
+## Notifications
+
+The rc_mon resource will apply any provided actions to the runit resource directly. It
+does not however provide information about the runit resource in use (the updated_by_last_action?
+does not reflect the state of the runit resource). This is due to the fact that the actions
+taken on the runit resource are not handled during the execution of the rc_mon_service, rather
+they are appended to the end of the run. This does mean that resources can subscribe directly
+to the runit resource.
+
 ## Important changes
 
 * cgroup restrictions are no longer UID based
