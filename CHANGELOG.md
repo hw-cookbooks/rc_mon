@@ -1,3 +1,6 @@
+## v0.1.6
+* Allow injecting support to existing runit resource
+
 ## v0.1.4
 * Removes user based resource restrictions
 * Adds support for system resource restriction explicitly applied to defined LWRP instance

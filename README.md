@@ -48,7 +48,7 @@ end
 ```
 
 Now you can watch the process consume memory on the node, and once it has reached
-the 200M threshold be killed and auto restarted. 
+the 200M threshold be killed and auto restarted.
 
 ```bash
 $ watch -n 0.5 'ps -AH ux | grep [m]emory_consumer'
@@ -60,7 +60,7 @@ RcMon uses two tools under the hood. Runit is used to keep the process running
 and cgroups are used to keep system resources under control. The `rc_mon_service`
 LWRP is simply creating a new control grouping, using runit to start the process
 (and keep it running), and a helper to properly move new processes into the
-appropriate grouping. It's really just a shortcut for something that can be accomplished 
+appropriate grouping. It's really just a shortcut for something that can be accomplished
 directly in a recipe covering only memory restriction and cpu shares.
 
 ## Notifications
@@ -71,6 +71,20 @@ does not reflect the state of the runit resource). This is due to the fact that 
 taken on the runit resource are not handled during the execution of the rc_mon_service, rather
 they are appended to the end of the run. This does mean that resources can subscribe directly
 to the runit resource.
+
+## Existing Runit Resources
+
+If you already have a `runit_service` resource defined, you can add `rc_mon` support into it:
+
+```ruby
+runit_service 'my_service' do
+  ...
+end
+
+rc_mon 'my_service' do
+  memory_limit '100M'
+end
+```
 
 ## Important changes
 
