@@ -1,4 +1,4 @@
-include RcMon::Provider
+include ::RcMon::ProviderMethods
 
 def load_current_resource
   new_resource.group_name new_resource.name unless new_resource.group_name

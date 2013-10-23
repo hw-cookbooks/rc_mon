@@ -8,7 +8,7 @@ module RcMon
     end
   end
 
-  module Provider
+  module ProviderMethods
     def up_helper(controls, do_action=:create)
       runit_resource = build_runit_resource
       control_dir = ::File.join(runit_resource.sv_dir, runit_resource.service_name, 'control')
