@@ -9,14 +9,26 @@ module RcMon
   end
 
   module ProviderMethods
-    def up_helper(controls, do_action=:create)
-      runit_resource = build_runit_resource
-      control_dir = ::File.join(runit_resource.sv_dir, runit_resource.service_name, 'control')
 
-      directory control_dir do
-        recursive true
+    def service_dir
+      unless(@dir)
+        runit_resource = build_runit_resource
+        @dir = ::File.join(runit_resource.sv_dir, runit_resource.service_name)
       end
+      @dir
+    end
 
+    def control_dir
+      unless(@dir)
+        @dir = ::File.join(service_dir, 'control')
+        directory @dir do
+          recursive true
+        end
+      end
+      @dir
+    end
+
+    def write_up_control(controls, do_action=:create)
       template ::File.join(control_dir, 'u') do
         source 'runit_control_up.erb'
         cookbook 'rc_mon'
@@ -27,6 +39,45 @@ module RcMon
           :group => new_resource.group_name
         )
         notifies :restart, build_runit_resource, :delayed
+      end
+    end
+
+    def command_prefix
+      user_args = [new_resource.control_user, new_resource.control_group].compact.join(':')
+      "chpst -u #{user_args}"
+    end
+
+    def write_run_file(do_action = :create)
+      if(new_resource.start_command)
+        template ::File.join(service_dir, 'run') do
+          source 'runit_script.erb'
+          cookbook 'rc_mon'
+          mode 0755
+          action do_action
+          variables(
+            :command => new_resource.send(attribute),
+            :command_prefix => command_prefix
+          )
+          notifies :restart, build_runit_resource, :delayed
+        end
+      end
+    end
+
+    def write_control_files(do_action = :create)
+      {:stop_command => [:d, :x, :e]}.each do |attribute, files|
+        [files].flatten.compact.each do |control_file|
+          template ::File.join(control_dir, control_file) do
+            source 'runit_script.erb'
+            cookbook 'rc_mon'
+            mode 0755
+            action do_action
+            variables(
+              :command => new_resource.send(attribute),
+              :command_prefix => command_prefix
+            )
+            notifies :restart, build_runit_resource, :delayed
+          end
+        end
       end
     end
 

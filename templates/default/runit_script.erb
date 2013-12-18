@@ -1,0 +1,4 @@
+#!/bin/sh
+
+exec 2>&1
+exec <%= [new_resource.command_prefix, new_resource.command].compcat.join(' ') %>
