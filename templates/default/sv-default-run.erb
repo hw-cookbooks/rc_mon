@@ -1,5 +1,5 @@
-<% if File.exists?(@path) -%>
-<%= File.read(@path) -%>
+<% if File.exists?(@options[:path]) -%>
+<%= File.read(@options[:path]) -%>
 <% else -%>
 #!/bin/sh
 /bin/true
