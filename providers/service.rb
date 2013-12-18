@@ -6,8 +6,10 @@ end
 
 RUNIT_ACTIONS = Chef::Resource::RunitService.new('rc_mon').instance_variable_get(:@allowed_actions).each do |action_name|
   action action_name.to_sym do
-    controls = configure_cgroups
     runit_resource = build_runit_resource
-    up_helper(controls)
+    controls = configure_cgroups
+    write_up_control(controls)
+    write_run_file
+    write_control_files
   end
 end
