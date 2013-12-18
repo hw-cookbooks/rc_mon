@@ -101,6 +101,7 @@ module RcMon
           @runit_resource.options(:path => ::File.join(service_dir, 'run'))
           @runit_resource.cookbook 'rc_mon'
         end
+        @runit_resource.default_logger true
       end
       @runit_resource
     end
