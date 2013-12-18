@@ -66,7 +66,7 @@ module RcMon
     def write_control_files(do_action = :create)
       {:stop_command => [:d, :x, :e]}.each do |attribute, files|
         [files].flatten.compact.each do |control_file|
-          template ::File.join(control_dir, control_file) do
+          template ::File.join(control_dir, control_file.to_s) do
             source 'runit_script.erb'
             cookbook 'rc_mon'
             mode 0755
