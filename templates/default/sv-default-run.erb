@@ -1,0 +1,6 @@
+<% if File.exists?(@path) -%>
+<%= File.read(@path) -%>
+<% else -%>
+#!/bin/sh
+/bin/true
+<% end -%>
