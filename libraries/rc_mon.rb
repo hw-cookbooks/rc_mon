@@ -11,21 +11,21 @@ module RcMon
   module ProviderMethods
 
     def service_dir
-      unless(@dir)
+      unless(@srv_dir)
         runit_resource = build_runit_resource
-        @dir = ::File.join(runit_resource.sv_dir, runit_resource.service_name)
+        @srv_dir = ::File.join(runit_resource.sv_dir, runit_resource.service_name)
       end
-      @dir
+      @srv_dir
     end
 
     def control_dir
-      unless(@dir)
-        @dir = ::File.join(service_dir, 'control')
-        directory @dir do
+      unless(@ctrl_dir)
+        @ctrl_dir = ::File.join(service_dir, 'control')
+        directory @ctrl_dir do
           recursive true
         end
       end
-      @dir
+      @ctrl_dir
     end
 
     def write_up_control(controls, do_action=:create)
