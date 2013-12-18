@@ -43,8 +43,10 @@ module RcMon
     end
 
     def command_prefix
-      user_args = [new_resource.control_user, new_resource.control_group].compact.join(':')
-      "chpst -u #{user_args}"
+      if(new_resource.control_user)
+        user_args = [new_resource.control_user, new_resource.control_group].compact.join(':')
+        "chpst -u #{user_args}" unless user_args.empty?
+      end
     end
 
     def write_run_file(do_action = :create)
