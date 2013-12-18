@@ -55,7 +55,7 @@ module RcMon
           mode 0755
           action do_action
           variables(
-            :command => new_resource.send(attribute),
+            :command => new_resource.start_command,
             :command_prefix => command_prefix
           )
           notifies :restart, build_runit_resource, :delayed
