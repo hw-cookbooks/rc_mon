@@ -96,6 +96,10 @@ module RcMon
           ), :delayed
         )
         new_resource.run_context.resource_collection << @runit_resource
+        unless(Mash.new(new_resource.runit_attributes).has_key?(:run_template_name))
+          @runit_resource.run_template_name 'runit_script.erb'
+          @runit_resource.cookbook 'rc_mon'
+        end
       end
       @runit_resource
     end
