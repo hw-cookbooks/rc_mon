@@ -1,3 +1,7 @@
+## v0.2.0
+* Allow providing only commands to LWRP (auto generate runit files)
+* Use default logger for runit
+
 ## v0.1.6
 * Allow injecting support to existing runit resource
 
